@@ -1,38 +1,61 @@
 "use client";
 
-export default function WeeklyDashboard() {
-  const week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+import { useEffect, useState } from "react";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 
-  const data = week.map((day, i) => ({
-    day,
-    score: Math.max(20, 100 - i * 12),
-  }));
+type Props = {
+  data: { day: string; score: number }[];
+};
+
+export default function WeeklyDashboard({ data }: Props) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // prevent SSR chart rendering completely
+  if (!mounted) {
+    return (
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-6">
+        <h2 className="text-2xl font-bold mb-6">
+          📅 Weekly Dashboard
+        </h2>
+        <div className="h-[300px]" />
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl p-6">
-
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-6">
       <h2 className="text-2xl font-bold mb-6">
-        📅 Weekly Progress
+        📅 Weekly Dashboard
       </h2>
 
-      <div className="space-y-4">
-        {data.map((d) => (
-          <div key={d.day}>
-            <div className="flex justify-between mb-1">
-              <span>{d.day}</span>
-              <span>{d.score}%</span>
-            </div>
-
-            <div className="w-full bg-slate-200 h-3 rounded-full">
-              <div
-                className="bg-indigo-500 h-3 rounded-full"
-                style={{ width: `${d.score}%` }}
-              />
-            </div>
-          </div>
-        ))}
+      <div className="w-full h-[300px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="day" />
+            <YAxis />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="score"
+              stroke="#6366f1"
+              strokeWidth={3}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
-
     </div>
   );
 }

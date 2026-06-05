@@ -20,7 +20,22 @@ import AnalyticsDashboard from "./components/AnalyticsDashboard";
 export default function Home() {
   const { data, setData } = useDailyData();
 
-  // XP SYSTEM
+  /**
+   * WEEKLY DATA (safe fallback so chart NEVER breaks)
+   */
+  const weekData = [
+    { day: "Mon", score: 0 },
+    { day: "Tue", score: 0 },
+    { day: "Wed", score: 0 },
+    { day: "Thu", score: 0 },
+    { day: "Fri", score: 0 },
+    { day: "Sat", score: 0 },
+    { day: "Sun", score: 0 },
+  ];
+
+  /**
+   * XP SYSTEM
+   */
   useEffect(() => {
     const completedTasks = [
       data.task1Done,
@@ -39,22 +54,15 @@ export default function Home() {
     const habitXP = completedHabits * 5;
     const sessionXP = data.sessions * 20;
 
-    const totalXP =
-      taskXP +
-      habitXP +
-      sessionXP;
+    const totalXP = taskXP + habitXP + sessionXP;
 
     let level = 1;
-
     if (totalXP >= 100) level = 2;
     if (totalXP >= 250) level = 3;
     if (totalXP >= 500) level = 4;
     if (totalXP >= 1000) level = 5;
 
-    if (
-      totalXP !== data.xp ||
-      level !== data.level
-    ) {
+    if (totalXP !== data.xp || level !== data.level) {
       setData((prev) => ({
         ...prev,
         xp: totalXP,
@@ -70,19 +78,14 @@ export default function Home() {
         {/* HERO */}
         <div className="bg-gradient-to-r from-indigo-900 to-slate-800 text-white p-8 rounded-3xl mb-6 shadow-xl">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-
             <div>
-              <h1 className="text-5xl font-bold">
-                👋 Daily Wins
-              </h1>
-
+              <h1 className="text-5xl font-bold">👋 Daily Wins</h1>
               <p className="mt-2 text-slate-300">
                 Become 1% better every day
               </p>
             </div>
 
             <ThemeToggle />
-
           </div>
         </div>
 
@@ -94,46 +97,29 @@ export default function Home() {
           <ProductivityScore data={data} />
         </div>
 
-        {/* LEVEL CARD */}
+        {/* LEVEL */}
         <div className="mt-6">
           <LevelCard data={data} />
         </div>
 
         {/* PLANNER + TIMER */}
         <div className="grid lg:grid-cols-2 gap-6 mt-6">
-
-          <DailyPlanner
-            data={data}
-            setData={setData}
-          />
-
-          <FocusTimer
-            data={data}
-            setData={setData}
-          />
-
+          <DailyPlanner data={data} setData={setData} />
+          <FocusTimer data={data} setData={setData} />
         </div>
 
         {/* HABITS + STREAK */}
         <div className="grid lg:grid-cols-2 gap-6 mt-6">
-
-          <HabitTracker
-            data={data}
-            setData={setData}
-          />
-
-          <StreakTracker
-            data={data}
-          />
-
+          <HabitTracker data={data} setData={setData} />
+          <StreakTracker data={data} />
         </div>
 
-        {/* WEEKLY DASHBOARD */}
+        {/* WEEKLY DASHBOARD (FIXED) */}
         <div className="mt-6">
-          <WeeklyDashboard />
+          <WeeklyDashboard data={weekData} />
         </div>
 
-        {/* DAILY REFLECTION */}
+        {/* REFLECTION */}
         <div className="mt-6">
           <DailyReflection />
         </div>
@@ -145,14 +131,13 @@ export default function Home() {
 
         {/* ACHIEVEMENTS */}
         <div className="mt-6">
-          <AchievementPanel
-            data={data}
-          />
+          <AchievementPanel data={data} />
         </div>
+
         {/* ANALYTICS */}
-<div className="mt-6">
-  <AnalyticsDashboard data={data} />
-</div>
+        <div className="mt-6">
+          <AnalyticsDashboard data={data} />
+        </div>
 
       </div>
     </main>

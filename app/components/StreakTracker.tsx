@@ -1,19 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { DailyData } from "../lib/types";
 
-export default function StreakTracker() {
-  const [streak, setStreak] = useState(1);
+type Props = {
+  data: DailyData;
+};
 
-  useEffect(() => {
-    const stored = localStorage.getItem("daily-streak");
-
-    if (stored) {
-      setStreak(Number(stored));
-    } else {
-      localStorage.setItem("daily-streak", "1");
-    }
-  }, []);
+export default function StreakTracker({ data }: Props) {
+  const streak = data.sessions || 1;
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6">

@@ -1,54 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { DailyData } from "../lib/types";
 
-export default function HabitTracker() {
-  const [gym, setGym] = useState(false);
-  const [reading, setReading] = useState(false);
-  const [water, setWater] = useState(false);
-  const [noScroll, setNoScroll] = useState(false);
+type Props = {
+  data: DailyData;
+  setData: React.Dispatch<React.SetStateAction<DailyData>>;
+};
 
-  // LOAD SAVED HABITS
+export default function HabitTracker({ data, setData }: Props) {
+  const [gym, setGym] = useState(data.gym);
+  const [reading, setReading] = useState(data.reading);
+  const [water, setWater] = useState(data.water);
+  const [noScroll, setNoScroll] = useState(data.noScroll);
+
   useEffect(() => {
-    const saved = localStorage.getItem("daily-habits");
-
-    if (!saved) return;
-
-    const data = JSON.parse(saved);
-
-    setGym(data.gym || false);
-    setReading(data.reading || false);
-    setWater(data.water || false);
-    setNoScroll(data.noScroll || false);
-  }, []);
-
-  // AUTO SAVE
-  useEffect(() => {
-    const data = {
+    setData((prev) => ({
+      ...prev,
       gym,
       reading,
       water,
       noScroll,
-    };
+    }));
+  }, [gym, reading, water, noScroll, setData]);
 
-    localStorage.setItem(
-      "daily-habits",
-      JSON.stringify(data)
-    );
-  }, [gym, reading, water, noScroll]);
+  const completed = [gym, reading, water, noScroll].filter(Boolean).length;
 
-  const completed =
-    [gym, reading, water, noScroll].filter(Boolean).length;
-
-  const percentage = Math.floor(
-    (completed / 4) * 100
-  );
+  const percentage = Math.floor((completed / 4) * 100);
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6">
-      <h2 className="text-2xl font-bold mb-4">
-        ✅ Habit Tracker
-      </h2>
+      <h2 className="text-2xl font-bold mb-4">✅ Habit Tracker</h2>
 
       <div className="space-y-4">
 
@@ -90,26 +72,18 @@ export default function HabitTracker() {
 
       </div>
 
-      {/* PROGRESS */}
       <div className="mt-6">
-
         <div className="flex justify-between mb-2">
-          <span className="font-medium">
-            Daily Habit Progress
-          </span>
-
-          <span className="font-bold">
-            {percentage}%
-          </span>
+          <span>Daily Habit Progress</span>
+          <span className="font-bold">{percentage}%</span>
         </div>
 
         <div className="w-full bg-slate-200 rounded-full h-4">
           <div
-            className="bg-blue-500 h-4 rounded-full transition-all"
+            className="bg-blue-500 h-4 rounded-full"
             style={{ width: `${percentage}%` }}
           />
         </div>
-
       </div>
     </div>
   );
