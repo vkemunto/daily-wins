@@ -16,6 +16,7 @@ import AchievementPanel from "./components/AchievementPanel";
 import ThemeToggle from "./components/ThemeToggle";
 import LevelCard from "./components/LevelCard";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import InstallButton from "./components/InstallButton";
 
 export default function Home() {
   const { data, setData } = useDailyData();
@@ -76,6 +77,10 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
 
         {/* HERO */}
+        <div className="flex gap-4 items-center">
+  <h1 className="text-5xl font-bold">👋 Daily Wins</h1>
+  <InstallButton />
+</div>
         <div className="bg-gradient-to-r from-indigo-900 to-slate-800 text-white p-8 rounded-3xl mb-6 shadow-xl">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div>
